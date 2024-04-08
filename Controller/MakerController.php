@@ -145,7 +145,7 @@ class MakerController extends AbstractController
         } catch (\Exception $e) {
             log_info('メーカー削除エラー', ['Maker id' => $Maker->getId(), $e]);
 
-            $message = trans('admin.delete.failed.foreign_key', ['%name%' => $Maker->getName()]);
+            $message = trans('admin.common.delete_error_foreign_key', ['%name%' => $Maker->getName()]);
             $this->addError($message, 'admin');
         }
 

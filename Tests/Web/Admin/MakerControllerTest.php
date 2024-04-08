@@ -37,7 +37,7 @@ class MakerControllerTest extends MakerWebCommon
         parent::setUp();
         $this->deleteAllRows(['plg_maker']);
 
-        $this->makerRepository = self::$container->get(MakerRepository::class);
+        $this->makerRepository = self::getContainer()->get(MakerRepository::class);
     }
 
     /**

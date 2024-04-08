@@ -50,7 +50,7 @@ class ProductDetailTest extends MakerWebCommon
 
         $this->Maker = $this->createMaker();
         $this->Product = $this->createProductMaker($this->Maker);
-        $this->productRepository = self::$container->get(ProductRepository::class);
+        $this->productRepository = self::getContainer()->get(ProductRepository::class);
     }
 
     /**
@@ -145,7 +145,7 @@ class ProductDetailTest extends MakerWebCommon
 
             $client->followRedirect();
 
-            $this->productRepository = self::$container->get(ProductRepository::class);
+            $this->productRepository = self::getContainer()->get(ProductRepository::class);
             $Product = $this->productRepository->find($productId);
         }
 

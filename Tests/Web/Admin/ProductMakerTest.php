@@ -14,8 +14,10 @@
 namespace Plugin\Maker42\Tests\Web\Admin;
 
 use Faker\Generator;
+use Eccube\Common\Constant;
 use Plugin\Maker42\Tests\Web\MakerWebCommon;
 use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\DomCrawler\Crawler;
 use Eccube\Repository\ProductRepository;
 
 /**
@@ -44,7 +46,7 @@ class ProductMakerTest extends MakerWebCommon
         parent::setUp();
         $this->deleteAllRows(['plg_maker']);
 
-        $this->productRepository = self::$container->get(ProductRepository::class);
+        $this->productRepository = self::getContainer()->get(ProductRepository::class);
     }
 
     /**
@@ -142,7 +144,12 @@ class ProductMakerTest extends MakerWebCommon
         );
 
         // Check message
-        $this->assertStringContainsString('有効な値ではありません。', $crawler->filter('.form-error-message')->html());
+        $errorMessages = $crawler->filter('.form-error-message')->each(function (Crawler $node): string {
+            return $node->text();
+        });
+        $versionParts = explode('-', Constant::VERSION);
+        $expectedMessage = version_compare(reset($versionParts), '4.3.0', '<') ? '有効な値ではありません。' : '選択した値は無効です。';
+        $this->assertStringContainsString($expectedMessage, implode("\n", $errorMessages));
 
         // Check database
         $Product = $this->productRepository->findOneBy([], ['id' => 'DESC']);
@@ -220,7 +227,10 @@ class ProductMakerTest extends MakerWebCommon
         );
 
         // Check message
-        $this->assertStringContainsString('有効なURLではありません。', $crawler->filter('.form-error-message')->html());
+        $errorMessages = $crawler->filter('.form-error-message')->each(function (Crawler $node): string {
+            return $node->text();
+        });
+        $this->assertStringContainsString('有効なURLではありません。', implode("\n", $errorMessages));
 
         // Check database
         $Product = $this->productRepository->findOneBy([], ['id' => 'DESC']);
@@ -407,7 +417,12 @@ class ProductMakerTest extends MakerWebCommon
         );
 
         // Check message
-        $this->assertStringContainsString('有効な値ではありません。', $crawler->filter('.form-error-message')->html());
+        $errorMessages = $crawler->filter('.form-error-message')->each(function (Crawler $node): string {
+            return $node->text();
+        });
+        $versionParts = explode('-', Constant::VERSION);
+        $expectedMessage = version_compare(reset($versionParts), '4.3.0', '<') ? '有効な値ではありません。' : '選択した値は無効です。';
+        $this->assertStringContainsString($expectedMessage, implode("\n", $errorMessages));
 
         // Check database
         $Product = $this->productRepository->findOneBy([], ['id' => 'DESC']);
@@ -520,7 +535,10 @@ class ProductMakerTest extends MakerWebCommon
         );
 
         // Check message
-        $this->assertStringContainsString('有効なURLではありません。', $crawler->filter('.form-error-message')->html());
+        $errorMessages = $crawler->filter('.form-error-message')->each(function (Crawler $node): string {
+            return $node->text();
+        });
+        $this->assertStringContainsString('有効なURLではありません。', implode("\n", $errorMessages));
 
         // Check database
         $Product = $this->productRepository->findOneBy([], ['id' => 'DESC']);
