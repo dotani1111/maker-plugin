@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\Maker42;
+namespace Plugin\Maker44;
 
 use Eccube\Common\EccubeNav;
 
@@ -19,10 +19,8 @@ class MakerNav implements EccubeNav
 {
     /**
      * {@inheritdoc}
-     *
-     * @return array
      */
-    public static function getNav()
+    public static function getNav(): array
     {
         return [
             'product' => [

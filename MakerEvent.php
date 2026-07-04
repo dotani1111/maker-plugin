@@ -11,19 +11,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\Maker42;
+namespace Plugin\Maker44;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Eccube\Event\TemplateEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MakerEvent implements EventSubscriberInterface
 {
     /**
      * {@inheritdoc}
-     *
-     * @return array
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             'Product/detail.twig' => ['onTemplateProductDetail', 10],
@@ -32,11 +30,9 @@ class MakerEvent implements EventSubscriberInterface
 
     /**
      * Append JS to display maker
-     *
-     * @param TemplateEvent $templateEvent
      */
-    public function onTemplateProductDetail(TemplateEvent $templateEvent)
+    public function onTemplateProductDetail(TemplateEvent $templateEvent): void
     {
-        $templateEvent->addSnippet('@Maker42/default/maker.twig');
+        $templateEvent->addSnippet('@Maker44/default/maker.twig');
     }
 }

@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\Maker42\Form\Type;
+namespace Plugin\Maker44\Form\Type;
 
 use Eccube\Common\EccubeConfig;
 use Symfony\Component\Form\AbstractType;
@@ -25,28 +25,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class MakerType extends AbstractType
 {
-    /**
-     * @var EccubeConfig
-     */
-    private $eccubeConfig;
-
-    /**
-     * MakerType constructor.
-     *
-     * @param EccubeConfig $eccubeConfig
-     */
-    public function __construct(EccubeConfig $eccubeConfig)
-    {
-        $this->eccubeConfig = $eccubeConfig;
+    public function __construct(
+        private EccubeConfig $eccubeConfig,
+    ) {
     }
 
     /**
      * Build config type form.
-     *
-     * @param FormBuilderInterface $builder
-     * @param array $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', TextType::class, [
@@ -56,15 +43,12 @@ class MakerType extends AbstractType
                 ],
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['min' => 1, 'max' => $this->eccubeConfig['eccube_stext_len']]),
+                    new Assert\Length(min: 1, max: $this->eccubeConfig['eccube_stext_len']),
                 ],
             ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
     }
 }

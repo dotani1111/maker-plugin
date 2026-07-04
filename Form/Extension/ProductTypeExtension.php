@@ -11,12 +11,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\Maker42\Form\Extension;
+namespace Plugin\Maker44\Form\Extension;
 
 use Eccube\Common\EccubeConfig;
 use Eccube\Form\Type\Admin\ProductType;
-use Plugin\Maker42\Entity\Maker;
-use Plugin\Maker42\Repository\MakerRepository;
+use Plugin\Maker44\Entity\Maker;
+use Plugin\Maker44\Repository\MakerRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -25,32 +25,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ProductTypeExtension extends AbstractTypeExtension
 {
-    /**
-     * @var EccubeConfig
-     */
-    private $eccubeConfig;
-
-    /**
-     * @var MakerRepository
-     */
-    protected $makerRepository;
-
-    /**
-     * ProductTypeExtension constructor.
-     *
-     * @param EccubeConfig $eccubeConfig
-     * @param MakerRepository $makerRepository
-     */
-    public function __construct(EccubeConfig $eccubeConfig, MakerRepository $makerRepository)
-    {
-        $this->eccubeConfig = $eccubeConfig;
-        $this->makerRepository = $makerRepository;
+    public function __construct(
+        private EccubeConfig $eccubeConfig,
+        protected MakerRepository $makerRepository,
+    ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('Maker', EntityType::class, [
@@ -75,17 +56,9 @@ class ProductTypeExtension extends AbstractTypeExtension
                 ],
                 'constraints' => [
                     new Assert\Url(),
-                    new Assert\Length(['max' => $this->eccubeConfig['eccube_url_len']]),
+                    new Assert\Length(max: $this->eccubeConfig['eccube_url_len']),
                 ],
             ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getExtendedType()
-    {
-        return ProductType::class;
     }
 
     /**

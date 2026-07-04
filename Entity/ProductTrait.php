@@ -11,66 +11,44 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\Maker42\Entity;
+namespace Plugin\Maker44\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Eccube\Annotation as Eccube;
+use Eccube\Attribute\EntityExtension;
+use Eccube\Entity\Product;
 
-/**
- * @Eccube\EntityExtension("Eccube\Entity\Product")
- */
+#[EntityExtension(Product::class)]
 trait ProductTrait
 {
-    /**
-     * @var \Plugin\Maker42\Entity\Maker
-     *
-     * @ORM\ManyToOne(targetEntity="Plugin\Maker42\Entity\Maker")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="maker_id", referencedColumnName="id")
-     * })
-     */
-    private $Maker;
+    #[ORM\ManyToOne(targetEntity: Maker::class)]
+    #[ORM\JoinColumn(name: 'maker_id', referencedColumnName: 'id')]
+    private ?Maker $Maker = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="maker_url", type="string", length=1024, nullable=true)
-     */
-    private $maker_url;
+    #[ORM\Column(name: 'maker_url', type: Types::STRING, length: 1024, nullable: true)]
+    private ?string $maker_url = null;
 
-    /**
-     * @return Maker
-     */
-    public function getMaker()
+    public function getMaker(): ?Maker
     {
         return $this->Maker;
     }
 
-    /**
-     * @param Maker|null $Maker
-     *
-     * @return $this
-     */
-    public function setMaker(Maker $Maker = null)
+    public function setMaker(?Maker $Maker = null): self
     {
         $this->Maker = $Maker;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getMakerUrl()
+    public function getMakerUrl(): ?string
     {
         return $this->maker_url;
     }
 
-    /**
-     * @param string $maker_url
-     */
-    public function setMakerUrl($maker_url)
+    public function setMakerUrl(?string $maker_url): self
     {
         $this->maker_url = $maker_url;
+
+        return $this;
     }
 }
