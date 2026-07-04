@@ -13,6 +13,7 @@
 
 namespace Plugin\Maker44\Controller;
 
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Eccube\Controller\AbstractController;
 use Plugin\Maker44\Entity\Maker;
 use Plugin\Maker44\Form\Type\MakerType;
@@ -107,7 +108,7 @@ class MakerController extends AbstractController
      * Delete Maker.
      */
     #[Route('/%eccube_admin_route%/maker/{id}/delete', name: 'maker_admin_delete', requirements: ['id' => '\d+'], methods: ['DELETE'])]
-    public function delete(Request $request, #[MapEntity(id: 'id')] Maker $Maker): RedirectResponse
+    public function delete(#[MapEntity(id: 'id')] Maker $Maker): RedirectResponse
     {
         $this->isTokenValid();
 
@@ -117,8 +118,10 @@ class MakerController extends AbstractController
             $this->addSuccess('maker.admin.delete.complete', 'admin');
 
             log_info('メーカー削除完了', ['Maker id' => $Maker->getId()]);
-        } catch (\Exception $e) {
-            log_info('メーカー削除エラー', ['Maker id' => $Maker->getId(), $e]);
+        } catch (ForeignKeyConstraintViolationException $e) {
+            // 商品から参照されている場合のみ外部キー制約エラーとして扱う。
+            // それ以外の例外（DB 障害等）は握り潰さず伝播させる。
+            log_warning('メーカー削除エラー: 外部キー制約により削除できません', ['Maker id' => $Maker->getId(), 'exception' => $e]);
 
             $message = trans('admin.common.delete_error_foreign_key', ['%name%' => $Maker->getName()]);
             $this->addError($message, 'admin');
@@ -137,6 +140,9 @@ class MakerController extends AbstractController
             $sortNos = $request->request->all();
             foreach ($sortNos as $makerId => $sortNo) {
                 $Maker = $this->makerRepository->find($makerId);
+                if (null === $Maker) {
+                    continue;
+                }
                 $Maker->setSortNo($sortNo);
                 $this->entityManager->persist($Maker);
             }

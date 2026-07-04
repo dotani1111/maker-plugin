@@ -35,7 +35,7 @@ class MakerRepository extends ServiceEntityRepository
     /**
      * Maker create/update
      */
-    public function save(Maker $Maker): bool
+    public function save(Maker $Maker): void
     {
         $em = $this->getEntityManager();
 
@@ -60,8 +60,6 @@ class MakerRepository extends ServiceEntityRepository
 
         $em->persist($Maker);
         $em->flush();
-
-        return true;
     }
 
     /**
@@ -72,29 +70,5 @@ class MakerRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
         $em->remove($Maker);
         $em->flush();
-    }
-
-    /**
-     * Move sortNo.
-     *
-     * @param array<int|string, int> $sortNos
-     *
-     * @return array<int|string, array<int|string, int>>
-     */
-    public function moveSortNo(array $sortNos): array
-    {
-        $results = [];
-        foreach ($sortNos as $id => $sortNo) {
-            $Maker = $this->find($id);
-            if ($Maker->getSortNo() == $sortNo) {
-                continue;
-            }
-            $results[$id] = $sortNos;
-            $Maker->setSortNo($sortNo);
-            $this->getEntityManager()->persist($Maker);
-            $this->getEntityManager()->flush();
-        }
-
-        return $results;
     }
 }
