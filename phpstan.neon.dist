@@ -1,0 +1,25 @@
+parameters:
+    level: 6
+    paths:
+        - .
+    # ProductTrait は #[EntityExtension] で Eccube\Entity\Product に getMaker()/getMakerUrl() を追加するが、
+    # それらは実行時に生成される proxy (app/proxy/entity) 上にしか存在しない。テストが $Product->getMaker()
+    # を呼ぶため、proxy をシンボル解決用にスキャンする（解析対象＝報告対象にはしないので他プラグインの proxy で落ちない）。
+    scanDirectories:
+        - ../../../app/proxy/entity
+    excludePaths:
+        - Resource/*
+        - Tests/bootstrap.php
+    doctrine:
+        objectManagerLoader: ../../../tests/object-manager.php
+    ignoreErrors:
+        # ProductTrait は proxy 経由でのみ use されるため、静的解析上は「未使用トレイト」に見えるが実際は使われている。
+        -
+            identifier: trait.unused
+            path: Entity/ProductTrait.php
+        # Entity は「未初期化アクセス」防止のため型付きプロパティを ?type = null にしているが、
+        # 該当カラムは DB 上 not-null（既定値あり）。実行時は Doctrine が必ず値を入れるため実害はない。
+        # 本体コアの Entity も同様の nullable プロパティ + not-null カラムで columnType を許容している。
+        -
+            message: '#type mapping mismatch: property can contain .+ but database expects .+#'
+            identifier: doctrine.columnType
