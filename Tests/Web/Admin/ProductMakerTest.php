@@ -11,22 +11,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\Maker42\Tests\Web\Admin;
+namespace Plugin\Maker44\Tests\Web\Admin;
 
-use Faker\Generator;
 use Eccube\Common\Constant;
-use Plugin\Maker42\Tests\Web\MakerWebCommon;
-use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\DomCrawler\Crawler;
 use Eccube\Repository\ProductRepository;
+use Faker\Generator;
+use Plugin\Maker44\Tests\Web\MakerWebCommon;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class ProductMakerTest.
  */
 class ProductMakerTest extends MakerWebCommon
 {
-    const MAKER = 'Maker';
-    const MAKER_URL = 'maker_url';
+    public const MAKER = 'Maker';
+    public const MAKER_URL = 'maker_url';
 
     /**
      * @var int
@@ -41,7 +42,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Set up function.
      */
-    protected function setUp() :void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->deleteAllRows(['plg_maker']);
@@ -52,7 +53,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test render
      */
-    public function testProductNewRender()
+    public function testProductNewRender(): void
     {
         $crawler = $this->client->request('GET', $this->generateUrl('admin_product_product_new'));
         $this->assertStringContainsString('メーカー', $crawler->filter('body .c-container')->html());
@@ -61,7 +62,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test new
      */
-    public function testProductNewWithoutMaker()
+    public function testProductNewWithoutMaker(): void
     {
         $crawler = $this->client->request('GET', $this->generateUrl('admin_product_product_new'));
         $this->assertStringContainsString('メーカー', $crawler->filter('body .c-container')->html());
@@ -70,7 +71,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test new
      */
-    public function testProductNewWithMakerWithoutMakerSelect()
+    public function testProductNewWithMakerWithoutMakerSelect(): void
     {
         $Maker = $this->createMaker();
 
@@ -81,7 +82,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test new
      */
-    public function testProductNewWithAddMakerURLWithoutMakerSelect()
+    public function testProductNewWithAddMakerURLWithoutMakerSelect(): void
     {
         /**
          * @var Generator
@@ -92,7 +93,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = $faker->url;
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $client->request(
@@ -122,7 +123,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test new
      */
-    public function testProductNewWithAddMakerInvalid()
+    public function testProductNewWithAddMakerInvalid(): void
     {
         $Maker = $this->createMaker();
         /**
@@ -134,7 +135,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = $faker->url;
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $crawler = $client->request(
@@ -161,7 +162,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test new
      */
-    public function testProductNewWithAddMakerWithoutMakerUrl()
+    public function testProductNewWithAddMakerWithoutMakerUrl(): void
     {
         $Maker = $this->createMaker();
 
@@ -174,7 +175,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = '';
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $client->request(
@@ -185,7 +186,9 @@ class ProductMakerTest extends MakerWebCommon
 
         $this->assertTrue($client->getResponse()->isRedirection());
 
-        $arrTmp = explode('/', $client->getResponse()->getTargetUrl());
+        $response = $client->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        $arrTmp = explode('/', $response->getTargetUrl());
         $productId = $arrTmp[count($arrTmp) - 2];
 
         $crawler = $client->followRedirect();
@@ -204,7 +207,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test render
      */
-    public function testProductNewWithAddMakerAndMakerUrlInValid()
+    public function testProductNewWithAddMakerAndMakerUrlInValid(): void
     {
         $Maker = $this->createMaker();
 
@@ -217,7 +220,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = $faker->word;
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $crawler = $client->request(
@@ -243,7 +246,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test new
      */
-    public function testProductNewWithAddMakerAndMakerUrlSuccess()
+    public function testProductNewWithAddMakerAndMakerUrlSuccess(): void
     {
         $Maker = $this->createMaker();
 
@@ -256,7 +259,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = $faker->url;
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $client->request(
@@ -267,7 +270,9 @@ class ProductMakerTest extends MakerWebCommon
 
         $this->assertTrue($client->getResponse()->isRedirection());
 
-        $arrTmp = explode('/', $client->getResponse()->getTargetUrl());
+        $response = $client->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        $arrTmp = explode('/', $response->getTargetUrl());
         $productId = $arrTmp[count($arrTmp) - 2];
 
         $crawler = $client->followRedirect();
@@ -286,7 +291,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test render
      */
-    public function testProductEditRender()
+    public function testProductEditRender(): void
     {
         $Product = $this->createProduct();
 
@@ -297,7 +302,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test render
      */
-    public function testProductEditWithMaker()
+    public function testProductEditWithMaker(): void
     {
         $Product = $this->createProduct();
         $Maker = $this->createMaker();
@@ -309,7 +314,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test new
      */
-    public function testProductEditWithAddMakerURLWithoutMakerSelect()
+    public function testProductEditWithAddMakerURLWithoutMakerSelect(): void
     {
         $this->createMaker();
 
@@ -323,7 +328,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = '';
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $client->request(
@@ -334,7 +339,9 @@ class ProductMakerTest extends MakerWebCommon
 
         $this->assertTrue($client->getResponse()->isRedirection());
 
-        $arrTmp = explode('/', $client->getResponse()->getTargetUrl());
+        $response = $client->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        $arrTmp = explode('/', $response->getTargetUrl());
         $productId = $arrTmp[count($arrTmp) - 2];
 
         $client->followRedirect();
@@ -345,7 +352,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = $faker->url;
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $client->request(
@@ -371,7 +378,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test Edit
      */
-    public function testProductEditWithAddMakerInvalid()
+    public function testProductEditWithAddMakerInvalid(): void
     {
         $this->createMaker();
 
@@ -385,7 +392,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = '';
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $client->request(
@@ -396,7 +403,9 @@ class ProductMakerTest extends MakerWebCommon
 
         $this->assertTrue($client->getResponse()->isRedirection());
 
-        $arrTmp = explode('/', $client->getResponse()->getTargetUrl());
+        $response = $client->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        $arrTmp = explode('/', $response->getTargetUrl());
         $productId = $arrTmp[count($arrTmp) - 2];
 
         $client->followRedirect();
@@ -407,7 +416,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = $faker->url;
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $crawler = $client->request(
@@ -435,7 +444,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test Edit
      */
-    public function testProductEditWithAddMakerWithoutMakerUrl()
+    public function testProductEditWithAddMakerWithoutMakerUrl(): void
     {
         $Maker = $this->createMaker();
 
@@ -445,7 +454,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = '';
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $client->request(
@@ -456,7 +465,9 @@ class ProductMakerTest extends MakerWebCommon
 
         $this->assertTrue($client->getResponse()->isRedirection());
 
-        $arrTmp = explode('/', $client->getResponse()->getTargetUrl());
+        $response = $client->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        $arrTmp = explode('/', $response->getTargetUrl());
         $productId = $arrTmp[count($arrTmp) - 2];
 
         $client->followRedirect();
@@ -467,7 +478,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = '';
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $client->request(
@@ -485,15 +496,16 @@ class ProductMakerTest extends MakerWebCommon
         // Check database
         $Product = $this->productRepository->findOneBy([], ['id' => 'DESC']);
 
+        // 空の任意 URL は 4.4 コアのフォーム挙動で null として保存される
         $this->actual = [$Product->getMaker()->getId(), $Product->getMakerUrl()];
-        $this->expected = [$Maker->getId(), $formData[self::MAKER_URL]];
+        $this->expected = [$Maker->getId(), null];
         $this->verify();
     }
 
     /**
      * Test render
      */
-    public function testProductEditWithAddMakerAndMakerUrlInValid()
+    public function testProductEditWithAddMakerAndMakerUrlInValid(): void
     {
         $Maker = $this->createMaker();
 
@@ -507,7 +519,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = '';
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $client->request(
@@ -518,7 +530,9 @@ class ProductMakerTest extends MakerWebCommon
 
         $this->assertTrue($client->getResponse()->isRedirection());
 
-        $arrTmp = explode('/', $client->getResponse()->getTargetUrl());
+        $response = $client->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        $arrTmp = explode('/', $response->getTargetUrl());
         $productId = $arrTmp[count($arrTmp) - 2];
 
         $client->followRedirect();
@@ -551,7 +565,7 @@ class ProductMakerTest extends MakerWebCommon
     /**
      * Test Edit
      */
-    public function testProductEditWithAddMakerAndMakerUrlSuccess()
+    public function testProductEditWithAddMakerAndMakerUrlSuccess(): void
     {
         $Maker = $this->createMaker();
         // New product
@@ -564,7 +578,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = '';
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $client->request(
@@ -575,7 +589,9 @@ class ProductMakerTest extends MakerWebCommon
 
         $this->assertTrue($client->getResponse()->isRedirection());
 
-        $arrTmp = explode('/', $client->getResponse()->getTargetUrl());
+        $response = $client->getResponse();
+        self::assertInstanceOf(RedirectResponse::class, $response);
+        $arrTmp = explode('/', $response->getTargetUrl());
         $productId = $arrTmp[count($arrTmp) - 2];
 
         $client->followRedirect();
@@ -586,7 +602,7 @@ class ProductMakerTest extends MakerWebCommon
         $formData[self::MAKER_URL] = $faker->url;
 
         /**
-         * @var Client
+         * @var KernelBrowser
          */
         $client = $this->client;
         $client->request(

@@ -11,12 +11,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\Maker42\Tests\Web;
+namespace Plugin\Maker44\Tests\Web;
 
 use Eccube\Common\Constant;
 use Eccube\Tests\Web\Admin\AbstractAdminWebTestCase;
 use Faker\Generator;
-use Plugin\Maker42\Entity\Maker;
+use Plugin\Maker44\Entity\Maker;
 
 /**
  * Class MakerWebTestCase
@@ -26,9 +26,9 @@ class MakerWebCommon extends AbstractAdminWebTestCase
     /**
      * Create product form to submit.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    protected function createFormData()
+    protected function createFormData(): array
     {
         $faker = $this->getFaker();
 
@@ -80,7 +80,7 @@ class MakerWebCommon extends AbstractAdminWebTestCase
      *
      * @return Maker
      */
-    protected function createMaker($sortNo = null)
+    protected function createMaker(?int $sortNo = null): Maker
     {
         /**
          * @var Generator

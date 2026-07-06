@@ -11,13 +11,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\Maker42\Tests\Web\Admin;
+namespace Plugin\Maker44\Tests\Web\Admin;
 
 use Eccube\Common\Constant;
 use Faker\Generator;
-use Plugin\Maker42\Tests\Web\MakerWebCommon;
+use Plugin\Maker44\Repository\MakerRepository;
+use Plugin\Maker44\Tests\Web\MakerWebCommon;
 use Symfony\Component\DomCrawler\Crawler;
-use Plugin\Maker42\Repository\MakerRepository;
 
 /**
  * Class MakerControllerTest.
@@ -43,7 +43,7 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test render maker.
      */
-    public function testMakerRender()
+    public function testMakerRender(): void
     {
         $crawler = $this->client->request('GET', $this->generateUrl('maker_admin_index'));
         $this->assertEquals(0, $crawler->filter('.sortable-item')->count());
@@ -52,7 +52,7 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test maker list
      */
-    public function testMakerList()
+    public function testMakerList(): void
     {
         $numberTest = 100;
         for ($i = 1; $i <= $numberTest; ++$i) {
@@ -70,7 +70,7 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test maker create.
      */
-    public function testMakerCreateNameIsEmpty()
+    public function testMakerCreateNameIsEmpty(): void
     {
         $formData = $this->createMakerFormData();
         $formData['name'] = '';
@@ -86,7 +86,7 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test maker create.
      */
-    public function testMakerCreateNameIsDuplicate()
+    public function testMakerCreateNameIsDuplicate(): void
     {
         // Exist maker
         $Maker = $this->createMaker(1);
@@ -105,7 +105,7 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test maker create.
      */
-    public function testMakerCreate()
+    public function testMakerCreate(): void
     {
         $formData = $this->createMakerFormData();
         $this->client->request(
@@ -132,10 +132,10 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test maker edit.
      */
-    public function testMakerInlineEditNameIsEmpty()
+    public function testMakerInlineEditNameIsEmpty(): void
     {
         $Maker = $this->createMaker(1);
-        $formData = $this->createMakerFormData($Maker->getId());
+        $formData = $this->createMakerFormData();
         $formData['name'] = '';
 
         /**
@@ -154,11 +154,11 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test maker edit.
      */
-    public function testMakerInlineEditNameIsDuplicate()
+    public function testMakerInlineEditNameIsDuplicate(): void
     {
         $MakerBefore = $this->createMaker(1);
         $Maker = $this->createMaker(1);
-        $formData = $this->createMakerFormData($Maker->getId());
+        $formData = $this->createMakerFormData();
 
         $formData['name'] = $MakerBefore->getName();
 
@@ -175,31 +175,13 @@ class MakerControllerTest extends MakerWebCommon
         $this->assertStringContainsString('既に使用されています。', $crawler->filter('#formInline'.$Maker->getId().' .invalid-feedback')->html());
     }
 
-//    /**
-//     * Test maker edit.
-//     */
-//    public function testMakerEditIdIsNotFound()
-//    {
-//        $Maker = $this->createMaker(1);
-//        $editId = $Maker->getId() + 1;
-//        $formData = $this->createMakerFormData($editId);
-//
-//        $this->client->request(
-//            'POST',
-//            $this->generateUrl('maker_admin_index', ['id' => $editId]),
-//            ['_maker' => $formData]
-//        );
-//
-//        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
-//    }
-
     /**
      * Test maker edit.
      */
-    public function testMakerInlineEdit()
+    public function testMakerInlineEdit(): void
     {
         $Maker = $this->createMaker(1);
-        $formData = $this->createMakerFormData($Maker->getId());
+        $formData = $this->createMakerFormData();
 
         $this->client->request(
             'POST',
@@ -222,7 +204,7 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test maker delete.
      */
-    public function testMakerDeleteGetMethod()
+    public function testMakerDeleteGetMethod(): void
     {
         $Maker = $this->createMaker();
 
@@ -237,7 +219,7 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test maker delete.
      */
-    public function testMakerDeleteIdIsNull()
+    public function testMakerDeleteIdIsNull(): void
     {
         $this->client->request(
             'DELETE',
@@ -250,7 +232,7 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test maker delete.
      */
-    public function testMakerDeleteIdIsNotExist()
+    public function testMakerDeleteIdIsNotExist(): void
     {
         /**
          * @var Generator
@@ -266,7 +248,7 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test maker edit.
      */
-    public function testMakerDelete()
+    public function testMakerDelete(): void
     {
         $Maker = $this->createMaker();
 
@@ -291,7 +273,7 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Test rank move
      */
-    public function testMoveRankTestIsNotPostAjax()
+    public function testMoveRankTestIsNotPostAjax(): void
     {
         $Maker01 = $this->createMaker(1);
         $oldSortNo = $Maker01->getSortNo();
@@ -324,7 +306,7 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Move rank test
      */
-    public function testMoveRank()
+    public function testMoveRank(): void
     {
         $Maker01 = $this->createMaker(1);
         $oldSortNo = $Maker01->getSortNo();
@@ -355,11 +337,9 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Create data form.
      *
-     * @param null $makerId
-     *
-     * @return array
+     * @return array<string, mixed>
      */
-    private function createMakerFormData($makerId = null)
+    private function createMakerFormData(): array
     {
         /**
          * @var Generator

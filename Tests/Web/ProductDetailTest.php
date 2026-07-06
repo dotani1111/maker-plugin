@@ -11,13 +11,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\Maker42\Tests\Web;
+namespace Plugin\Maker44\Tests\Web;
 
 use Eccube\Entity\Product;
-use Faker\Generator;
-use Plugin\Maker42\Entity\Maker;
-use Symfony\Component\HttpKernel\Client;
 use Eccube\Repository\ProductRepository;
+use Faker\Generator;
+use Plugin\Maker44\Entity\Maker;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class ProductDetailTest
@@ -56,51 +57,25 @@ class ProductDetailTest extends MakerWebCommon
     /**
      * Product detail render test maker
      */
-    public function testProductDetailWhenHasMakerButUnRegister()
+    public function testProductDetailWhenHasMakerButUnRegister(): void
     {
         $this->markTestSkipped('Skipped due to need include template on twig file manually');
-        $productId = $this->Product->getId();
-        $this->Product->setMaker(null);
-        $this->Product->setMakerUrl(null);
-        $this->entityManager->persist($this->Product);
-        $this->entityManager->flush();
-        $crawler = $this->client->request('GET', $this->generateUrl('product_detail', ['id' => $productId]));
-        $html = $crawler->filter('.ec-productRole__profile')->html();
-        $this->assertNotContains('メーカーコード', $html);
-        $this->assertNotContains('メーカーURL', $html);
     }
 
     /**
      * Product detail render test maker
      */
-    public function testProductDetailWhenRegisterMakerWithoutMakerUrl()
+    public function testProductDetailWhenRegisterMakerWithoutMakerUrl(): void
     {
         $this->markTestSkipped('Skipped due to need include template on twig file manually');
-        $productId = $this->Product->getId();
-        $this->Product->setMakerUrl('');
-        $this->entityManager->persist($this->Product);
-        $this->entityManager->flush();
-
-        $crawler = $this->client->request('GET', $this->generateUrl('product_detail', ['id' => $productId]));
-
-        $html = $crawler->filter('.ec-productRole__profile')->html();
-        $this->assertStringContainsString($this->Product->getMaker()->getName(), $html);
-        $this->assertNotContains('メーカーURL', $html);
     }
 
     /**
      * Product detail render test maker
      */
-    public function testProductDetailWhenRegisterMakerAndMakerUrl()
+    public function testProductDetailWhenRegisterMakerAndMakerUrl(): void
     {
         $this->markTestSkipped('Skipped due to need include template on twig file manually');
-        $productId = $this->Product->getId();
-
-        $crawler = $this->client->request('GET', $this->generateUrl('product_detail', ['id' => $productId]));
-
-        $html = $crawler->filter('.ec-productRole__profile')->html();
-        $this->assertStringContainsString($this->Product->getMaker()->getName(), $html);
-        $this->assertStringContainsString($this->Product->getMakerUrl(), $html);
     }
 
     /**
@@ -111,7 +86,7 @@ class ProductDetailTest extends MakerWebCommon
      *
      * @return Product
      */
-    protected function createProductMaker(Maker $Maker, $Product = null)
+    protected function createProductMaker(Maker $Maker, ?Product $Product = null): Product
     {
         /**
          * @var Generator
@@ -129,7 +104,7 @@ class ProductDetailTest extends MakerWebCommon
             $formData['maker_url'] = $faker->url;
 
             /**
-             * @var Client
+             * @var KernelBrowser
              */
             $client = $this->client;
             $client->request(
@@ -140,7 +115,9 @@ class ProductDetailTest extends MakerWebCommon
 
             $this->assertTrue($client->getResponse()->isRedirection());
 
-            $arrTmp = explode('/', $client->getResponse()->getTargetUrl());
+            $response = $client->getResponse();
+            self::assertInstanceOf(RedirectResponse::class, $response);
+            $arrTmp = explode('/', $response->getTargetUrl());
             $productId = $arrTmp[count($arrTmp) - 2];
 
             $client->followRedirect();

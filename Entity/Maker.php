@@ -11,86 +11,59 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\Maker42\Entity;
+namespace Plugin\Maker44\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Entity\AbstractEntity;
+use Plugin\Maker44\Repository\MakerRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
  * Class Maker.
- *
- * @ORM\Table(name="plg_maker")
- * @ORM\Entity(repositoryClass="Plugin\Maker42\Repository\MakerRepository")
  */
+#[ORM\Table(name: 'plg_maker')]
+#[ORM\Entity(repositoryClass: MakerRepository::class)]
+#[UniqueEntity('name')]
 class Maker extends AbstractEntity
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", options={"unsigned":true})
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER, options: ['unsigned' => true])]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     */
-    private $name;
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
+    private ?string $name = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="sort_no", type="integer")
-     */
-    private $sort_no;
+    #[ORM\Column(name: 'sort_no', type: Types::INTEGER)]
+    private ?int $sort_no = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="create_date", type="datetimetz")
-     */
-    private $create_date;
+    #[ORM\Column(name: 'create_date', type: Types::DATETIMETZ_MUTABLE)]
+    private ?\DateTime $create_date = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="update_date", type="datetimetz")
-     */
-    private $update_date;
+    #[ORM\Column(name: 'update_date', type: Types::DATETIMETZ_MUTABLE)]
+    private ?\DateTime $update_date = null;
 
     /**
      * Get id.
-     *
-     * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
      * Get name.
-     *
-     * @return string
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
      * Set name.
-     *
-     * @param string $name
-     *
-     * @return Maker
      */
-    public function setName($name)
+    public function setName(?string $name): Maker
     {
         $this->name = $name;
 
@@ -99,22 +72,16 @@ class Maker extends AbstractEntity
 
     /**
      * Get sort_no.
-     *
-     * @return int
      */
-    public function getSortNo()
+    public function getSortNo(): ?int
     {
         return $this->sort_no;
     }
 
     /**
      * Set sort no.
-     *
-     * @param int $sortNo
-     *
-     * @return Maker
      */
-    public function setSortNo($sortNo)
+    public function setSortNo(?int $sortNo): Maker
     {
         $this->sort_no = $sortNo;
 
@@ -123,12 +90,8 @@ class Maker extends AbstractEntity
 
     /**
      * Set create_date.
-     *
-     * @param \DateTime $createDate
-     *
-     * @return Maker
      */
-    public function setCreateDate($createDate)
+    public function setCreateDate(\DateTime $createDate): Maker
     {
         $this->create_date = $createDate;
 
@@ -137,22 +100,16 @@ class Maker extends AbstractEntity
 
     /**
      * Get create_date.
-     *
-     * @return \DateTime
      */
-    public function getCreateDate()
+    public function getCreateDate(): ?\DateTime
     {
         return $this->create_date;
     }
 
     /**
      * Set update_date.
-     *
-     * @param \DateTime $updateDate
-     *
-     * @return Maker
      */
-    public function setUpdateDate($updateDate)
+    public function setUpdateDate(\DateTime $updateDate): Maker
     {
         $this->update_date = $updateDate;
 
@@ -161,23 +118,9 @@ class Maker extends AbstractEntity
 
     /**
      * Get update_date.
-     *
-     * @return \DateTime
      */
-    public function getUpdateDate()
+    public function getUpdateDate(): ?\DateTime
     {
         return $this->update_date;
-    }
-
-    /**
-     * Unique check.
-     *
-     * @param ClassMetadata $metadata
-     */
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
-    {
-        $metadata->addConstraint(new UniqueEntity([
-            'fields' => 'name',
-        ]));
     }
 }
