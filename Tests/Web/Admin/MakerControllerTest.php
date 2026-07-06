@@ -175,24 +175,6 @@ class MakerControllerTest extends MakerWebCommon
         $this->assertStringContainsString('既に使用されています。', $crawler->filter('#formInline'.$Maker->getId().' .invalid-feedback')->html());
     }
 
-    //    /**
-    //     * Test maker edit.
-    //     */
-    //    public function testMakerEditIdIsNotFound()
-    //    {
-    //        $Maker = $this->createMaker(1);
-    //        $editId = $Maker->getId() + 1;
-    //        $formData = $this->createMakerFormData($editId);
-    //
-    //        $this->client->request(
-    //            'POST',
-    //            $this->generateUrl('maker_admin_index', ['id' => $editId]),
-    //            ['_maker' => $formData]
-    //        );
-    //
-    //        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
-    //    }
-
     /**
      * Test maker edit.
      */

@@ -42,7 +42,8 @@ return RectorConfig::configure()
         // Symfony 7.4 対応 (@Route → #[Route], @Template, buildForm(): void 等)
         SymfonySetList::SYMFONY_74,
         SymfonySetList::SYMFONY_CODE_QUALITY,
-        // Doctrine ORM 3.0 / DBAL 3.0 対応 (@ORM → #[ORM], 型付きプロパティ)
+        // Doctrine ORM 3 対応 (@ORM → #[ORM], 型付きプロパティ)。
+        // DBAL は 4.x だが rector に DBAL4 用セットが無いため DBAL30 セットを流用する。
         DoctrineSetList::DOCTRINE_CODE_QUALITY,
         DoctrineSetList::DOCTRINE_DBAL_30,
         DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES,
