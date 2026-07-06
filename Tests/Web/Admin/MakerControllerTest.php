@@ -135,7 +135,7 @@ class MakerControllerTest extends MakerWebCommon
     public function testMakerInlineEditNameIsEmpty(): void
     {
         $Maker = $this->createMaker(1);
-        $formData = $this->createMakerFormData($Maker->getId());
+        $formData = $this->createMakerFormData();
         $formData['name'] = '';
 
         /**
@@ -158,7 +158,7 @@ class MakerControllerTest extends MakerWebCommon
     {
         $MakerBefore = $this->createMaker(1);
         $Maker = $this->createMaker(1);
-        $formData = $this->createMakerFormData($Maker->getId());
+        $formData = $this->createMakerFormData();
 
         $formData['name'] = $MakerBefore->getName();
 
@@ -199,7 +199,7 @@ class MakerControllerTest extends MakerWebCommon
     public function testMakerInlineEdit(): void
     {
         $Maker = $this->createMaker(1);
-        $formData = $this->createMakerFormData($Maker->getId());
+        $formData = $this->createMakerFormData();
 
         $this->client->request(
             'POST',
@@ -355,11 +355,9 @@ class MakerControllerTest extends MakerWebCommon
     /**
      * Create data form.
      *
-     * @param null $makerId
-     *
      * @return array<string, mixed>
      */
-    private function createMakerFormData($makerId = null): array
+    private function createMakerFormData(): array
     {
         /**
          * @var Generator
